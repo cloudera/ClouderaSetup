@@ -17,3 +17,7 @@ Follow the `README` file in the respective folder for detailed steps on configur
 [NOTE]
 In the subfolders, Cloudera Data Platform may be referred to as CDP or simply Cloudera. Both terms refer to the same platform.
 
+---
+
+**Copyright Notice**  
+All material is Copyright (c) 2020-2025 Cloudera, Inc. unless stated otherwise.

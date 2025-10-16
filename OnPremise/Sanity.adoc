@@ -1,0 +1,326 @@
+= Base Cluster Sanity Check
+Kuldeep Sahu <ksahu@cloudera.com>
+v1.0, Oct 16, 2025
+:imagesdir: ../images
+:toc: left
+:toc-title: 📑 Table of Contents
+:toclevels: 3
+:numbered:
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+== Cloudera Manager UI Sanity Check
+
+* **Credentials:**
+** For Admin user → `admin/admin`
+** For normal user → local CM user or LDAP user can be used
+
+---
+
+Follow these steps to validate that the Cloudera Manager (CM) and its managed services are healthy and fully operational.
+
+. **Verify Cluster Health**
+  * Ensure the base cluster and all associated services are in a healthy state (green status).
+
+. **Check Node Status**
+  * Go to the *Nodes* tab in Cloudera Manager and confirm that all nodes are up, reachable, and show as healthy.
+
+. **Validate Parcel Configuration**
+  * Navigate to *Parcels → Configuration* and verify:
+    ** All parcel repository URLs show a green status.
+    ** Parcels are successfully downloaded, distributed, and activated.
+
+. **Confirm CMS (Cloudera Management Service) Health**
+  * Check that all CMS roles — *Host Monitor, Service Monitor, Activity Monitor, Reports Manager,* etc. — are running and healthy.
+
+. **Verify Metrics and Graphs**
+  * Go to the *Cloudera Management Service → Charts* section and confirm that metrics and service graphs are visible and updating in real time.
+
+image::cm.png[Cloudera Manager UI Sanity Check, width=800, align=center]
+
+== Services UI Accessibility Check
+
+If the service UIs (like HDFS, Yarn, Hue, Ranger, etc.) are **not accessible through their URLs**, ensure that the hostname mappings are correctly configured in `/etc/hosts` on your local system or jump host.
+
+. **Edit the /etc/hosts File**
++
+[source,shell]
+----
+sudo vi /etc/hosts
+----
+
+. **Add Hostname Entries**
++
+[source,text]
+----
+# Example entries
+192.168.1.10 pvcbase-master.cldrsetup.local pvcbase-master
+192.168.1.11 pvcbase-worker1.cldrsetup.local pvcbase-worker1
+192.168.1.12 pvcbase-worker2.cldrsetup.local pvcbase-worker2
+----
+
+=== Knox UI
+
+* For Atlas & Knox UI:
+** Create a Linux user along with a password on the server where Knox and Atlas are actually installed(to log in using PAM authentication)
+** sudo useradd <username>
+** sudo passwd <username>
+** `chmod 777 /etc/shadow`
+** You can use the same Linux user to log in to Atlas & Knox UI
+
+[NOTE]
+====
+You can follow the above steps or integrate both Atlas and Knox with LDAP and use LDAP users for authentication.
+
+Once you are logged in to Knox, you can use the Knox UI to access other services directly.
+====
+
+image::Knox.png[Knox UI Screenshot, width=800, align=center]
+
+=== Atlas UI
+
+image::Atlas.png[Knox UI Screenshot, width=800, align=center]
+
+=== HBase
+_No credentials needed._
+
+image::Hbase.png[Hbase UI Screenshot, width=800, align=center]
+
+=== Hue
+. During the first login, it will ask to set up credentials. Provide: `admin/admin`
+
+. **Run Basic Hive Commands**
++
+[source,sql]
+----
+-- List existing databases
+SHOW DATABASES;
+
+-- Create a new test database
+CREATE DATABASE ksahu_test_db;
+
+-- Switch to the new database
+USE ksahu_test_db;
+
+-- Verify tables in the current database
+SHOW TABLES;
+
+-- Create a sample test table
+CREATE TABLE test_tbl (
+  id INT,
+  name VARCHAR(30)
+);
+
+-- Confirm the table creation
+SHOW TABLES;
+
+-- Describe the table structure
+DESCRIBE test_tbl;
+
+-- Insert sample data (example)
+INSERT INTO test_tbl VALUES (1, 'Cloudera Test'), (2, 'Hue Validation');
+
+-- Query the table to verify data insertion
+SELECT * FROM test_tbl;
+----
+
+. **Validate Query Results**
+  * Ensure that each command runs successfully.
+  * Verify that the table and records are visible in the query output panel.
+
+image::Hue.png[Hue UI Screenshot, width=800, align=center]
+
+=== HDFS Namenode UI
+* No credentials needed.
+
+image::HDFS.png[HDFS UI Screenshot, width=800, align=center]
+
+=== Yarn UI
+* No credentials needed.
+
+image::Yarn.png[Yarn UI Screenshot, width=800, align=center]
+
+=== Spark UI
+* No credentials needed.
+
+image::Spark.png[Spark UI Screenshot, width=800, align=center]
+
+=== Ozone UI
+* No credentials needed.
+
+image::Ozone.png[Ozone UI Screenshot, width=800, align=center]
+
+=== Impala UI
+* No credentials needed.
+
+[NOTE]
+====
+Disable/Enable Kerberos Authentication for HTTP Web Consoles – HBase (Service-Wide), YARN, Spark2, Spark3, HiveServer2, Impala, HDFS, etc.
+
+Click on **Generate Missing Credentials** for Kerberos.
+====
+
+---
+
+image::Impala.png[Impala UI Screenshot, width=800, align=center]
+
+=== Ranger UI
+* Credentials: `admin/RedHat@123`
+[NOTE]
+====
+This is the credentials that we have provided while installing cloudera on-prem base cluster.
+====
+
+. **Access Ranger UI**
+  * Log in to the Ranger web interface using the above credentials.
+
+. **(Optional) Test Ranger Capabilities**
+  * You can insert some meaningful sample data in Hive and validate Ranger’s security features.
+  * Create and apply Ranger policies such as:
+    ** Row Level Filtering
+    ** Column masking
+    ** Access control policies
+  * Re-run Hive queries (via Hue or CLI) to verify that the configured policies are enforced correctly.
+  * Confirm that masked or restricted data behaves as expected for different users.
+
+image::Ranger.png[Ranger UI Screenshot, width=800, align=center]
+
+=== NiFi UI (Applicable only if installed)
+* You can acess this UI using Knox.
+
+image::Nifi.png[Nifi UI Screenshot, width=800, align=center]
+
+=== NiFi Registry UI (Applicable only if installed)
+* You can acess this UI using Knox.
+
+image::Nifiregistry.png[Nifiregistry UI Screenshot, width=800, align=center]
+
+=== DataViz UI (Applicable only if installed)
+* Default Credentials: `vizapps_admin/vizapps_admin`
+
+image::dataviz.png[dataviz UI Screenshot, width=800, align=center]
+
+== Sanity Checks Performed for HDFS
+
+[source,shell]
+----
+
+[root@pvcbase-master ~]# dnf install -y wget unzip
+[root@pvcbase-master ~]# wget https://files.grouplens.org/datasets/movielens/ml-20m.zip
+[root@pvcbase-master ~]# unzip ml-20m.zip
+[root@pvcbase-master ~]# cd ml-20m
+[root@pvcbase-master ml-20m]# sed -i 1d *
+
+[root@pvcbase-master ml-20m]# hdfs dfs -ls /
+24/03/21 04:32:28 WARN ipc.Client: Exception encountered while connecting to the server : org.apache.hadoop.security.AccessControlException: Client cannot authenticate via:[TOKEN, KERBEROS]
+ls: DestHost:destPort pvcbasemaster.cldrsetup.local:8020 , LocalHost:localPort pvcbasemaster.cldrsetup.local/172.16.31.227:0. Failed on local exception: java.io.IOException: org.apache.hadoop.security.AccessControlException: Client cannot authenticate via:[TOKEN, KERBEROS]
+[root@pvcbase-master ml-20m]# 
+
+# Locate the HDFS keytab
+[root@pvcbase-master ml-20m]# find / -name hdfs.keytab
+
+# List its contents
+[root@pvcbase-master ml-20m]# klist -kt /run/cloudera-scm-agent/process/1546343796-hdfs-NAMENODE/hdfs.keytab
+Keytab name: FILE:/run/cloudera-scm-agent/process/1546343796-hdfs-NAMENODE/hdfs.keytab
+KVNO Timestamp           Principal
+---- ------------------- ------------------------------------------------------
+   3 03/17/2024 12:33:40 HTTP/pvcbasemaster.cldrsetup.local@CLDRSETUP.LOCAL
+   3 03/17/2024 12:33:40 hdfs/pvcbasemaster.cldrsetup.local@CLDRSETUP.LOCAL
+
+# Obtain a Kerberos ticket for the HDFS principal
+[root@pvcbase-master ml-20m]# kinit -kt /run/cloudera-scm-agent/process/1546343796-hdfs-NAMENODE/hdfs.keytab hdfs/pvcbasemaster.cldrsetup.local@CLDRSETUP.LOCAL
+
+# Verify your ticket cache
+[root@ipaserver ml-20m]# klist
+Ticket cache: FILE:/tmp/krb5cc_0
+Default principal: hdfs/pvcbasemaster.cldrsetup.local@CLDRSETUP.LOCAL
+Valid starting       Expires              Service principal
+03/21/2024 22:50:18  03/22/2024 22:50:18  krbtgt/CLDRSETUP.LOCAL@CLDRSETUP.LOCAL
+        renew until 03/28/2024 22:50:18
+----
+
+[source,shell]
+----
+[root@pvcbase-master ml-20m]# hdfs dfs -mkdir /tmp/movielens
+[root@pvcbase-master ml-20m]# hdfs dfs -put * /tmp/movielens/
+[root@pvcbase-master ml-20m]# hdfs dfs -chown -R hive:supergroup /tmp/movielens
+[root@pvcbase-master ml-20m]# hdfs dfs -ls /tmp/movielens/
+----
+
+[source,sql]
+----
+# Login to Hive shell and run the below queries (You can use beeline as well)
+[root@pvcbase-master ml-20m]# hive
+
+CREATE DATABASE movielens;
+USE movielens;
+
+CREATE TABLE IF NOT EXISTS ratings (
+  userId INT,
+  movieId INT,
+  rating DOUBLE,
+  ts BIGINT
+)
+COMMENT "Movie Ratings"
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+LOAD DATA INPATH '/tmp/movielens/movies.csv' OVERWRITE INTO TABLE movies;
+LOAD DATA INPATH '/tmp/movielens/tags.csv' OVERWRITE INTO TABLE tags;
+LOAD DATA INPATH '/tmp/movielens/ratings.csv' OVERWRITE INTO TABLE ratings;
+LOAD DATA INPATH '/tmp/movielens/genome-tags.csv' OVERWRITE INTO TABLE genome_tags;
+LOAD DATA INPATH '/tmp/movielens/genome-scores.csv' OVERWRITE INTO TABLE genome_scores;
+----
+
+---
+
+== Sanity Checks Performed for Ozone
+
+[source,shell]
+----
+[root@pvcbase-master ~]# find / -name ozone.keytab
+/run/cloudera-scm-agent/process/1546340911-ozone-S3_GATEWAY/ozone.keytab
+/run/cloudera-scm-agent/process/1546340899-ozone-OZONE_RECON/ozone.keytab
+/run/cloudera-scm-agent/process/1546340905-ozone-OZONE_DATANODE/ozone.keytab
+/run/cloudera-scm-agent/process/1546340909-ozone-STORAGE_CONTAINER_MANAGER/ozone.keytab
+/run/cloudera-scm-agent/process/1546340913-ozone-OZONE_MANAGER/ozone.keytab
+
+[root@pvcbase-master ~]# klist -kt /run/cloudera-scm-agent/process/1546340913-ozone-OZONE_MANAGER/ozone.keytab
+Keytab name: FILE:/run/cloudera-scm-agent/process/1546340913-ozone-OZONE_MANAGER/ozone.keytab
+KVNO Timestamp         Principal
+---- ----------------- --------------------------------------------------------
+   1 06/10/25 11:29:34 HTTP/pvcbase-master.redhat.local@REDHAT.LOCAL
+   1 06/10/25 11:29:34 om/pvcbase-master.redhat.local@REDHAT.LOCAL
+   1 06/10/25 11:29:34 scm/pvcbase-master.redhat.local@REDHAT.LOCAL
+
+[root@pvcbase-master ~]# kinit -kt /run/cloudera-scm-agent/process/1546340913-ozone-OZONE_MANAGER/ozone.keytab om/pvcbase-master.redhat.local@REDHAT.LOCAL
+
+[root@pvcbase-master ~]# klist
+Ticket cache: FILE:/tmp/krb5cc_0
+Default principal: om/pvcbase-master.redhat.local@REDHAT.LOCAL
+
+Valid starting     Expires            Service principal
+07/01/25 06:29:44  07/02/25 06:03:38  krbtgt/REDHAT.LOCAL@REDHAT.LOCAL
+        renew until 07/08/25 06:29:44
+----
+
+[source,shell]
+----
+[root@pvcbase-master ~]# ozone sh volume list
+[root@pvcbase-master ~]# ozone sh volume create ozone11
+[root@pvcbase-master ~]# ozone sh volume list
+[root@pvcbase-master ~]# ozone sh bucket create ozone11/testkdbkt1
+[root@pvcbase-master ~]# ozone sh bucket list ozone11
+----
+
+---
+
+== Summary
+Base Cluster Sanity Check Results completed successfully.

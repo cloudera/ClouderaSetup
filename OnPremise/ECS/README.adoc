@@ -50,8 +50,7 @@ Spin up new VMs on-premises or on AWS (or any other cloud, !!!not tested yet) an
 
 **Installation Instructions**
 
-* **👉 link:./Cloudera_On-Premise_Deployment_Guide(ECS).pdf[Cloudera On-Premise Deployment Guide (ECS)]**
-
+**👉 link:./Cloudera_On-Premise_Deployment_Guide-ECS.pdf[Cloudera On-Premise Deployment Guide (ECS)]**
 
 **Additional Notes**
 
@@ -84,5 +83,6 @@ A detailed step-by-step learning course on this setup's walkthrough is available
 image::./cloudera-partner-academy-pvc.png[Cloudera Partner Academy,width=840,height=540]
 
 ---
+
 
 

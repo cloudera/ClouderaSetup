@@ -1,0 +1,79 @@
+
+= Running Cloudera Data Platform on Red Hat OpenShift Virtualization
+v1.0, December, 2025
+:doctype: article
+:toc:
+:toc-title: 📑 Table of Contents
+:toclevels: 3
+:numbered:
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+== Summary 
+This document provides an overview of the deployment of *Cloudera Private Cloud Base* and its integrated *Data Services* on *Red Hat OpenShift Virtualization (OCP Virt)*. 
+
+Full details of the architecture, technical stack, testing procedures, and security implementations are covered in the following guides:
+
+* link:OCP_Virt_Setup_for_Cloudera_onprem.pdf[**OCP Virt Setup for Cloudera On-Prem**]
+
+* link:Cloudera_On-Premise_Deployment_Guide-OCP-Virt.pdf[**Cloudera On-Premise Deployment Guide**]
+
+== Why This Matters
+
+This converged architecture solves a ton of headaches:
+
+* *Unified Platform* 
+Running both traditional VMs (for Cloudera Base) and containers on a single Kubernetes platform.
+* *Massive Scale Validation* 
+Testing confirmed robustness at scale, integrating a *100+ OCP-Virtualized node* Cloudera Base Cluster with a dedicated Data Services Cluster (7 bare metal nodes).
+
+== The Technical Stack at a Glance
+
+Red Hat and Cloudera components:
+
+[cols="1,1,1", options="header"]
+|===
+|*Component* |*Key Version* |*Role*
+|*OpenShift Container Platform* |4.19.15 |Virtualization
+|*RHEL* |9.5 |Operating system
+|*Cloudera Manager* |7.13.1 CHF4+ |Centralized cluster management
+|*CDH Parcel* |7.3.1.400 SP2 |Cloudera's core data runtime
+|*Cloudera Private Cloud DS* |1.5.5 |Platform for Data Services
+|===
+
+== Data Services Testing At Scale
+
+End to End Functionality was validated across the major Data Services:
+
+* *CDW (Cloudera Data Warehouse)* : Created Virtual Warehouses (Hive / Impala) and ran successful sample CRUD queries via the Hue interface.
+* *CDE (Cloudera Data Engineering)* : Set up Virtual Clusters (Spark 3.5.1), added Hadoop Authentication with a Keytab, and executed multiple sample Spark jobs.
+* *CAI (Cloudera AI)* : Successfully deployed the AI Workbench, configured Hadoop Authentication, and tested session creation with sample project templates.
+
+== Enterprise Security
+
+Implemented a full security suite, ensuring the cluster meets enterprise compliance and operational needs:
+
+* *Identity & Access* : Leveraged *FreeIPA* (v4.12.2) as the Identity Provider for Kerberos and LDAP, securing principals and simplifying user management.
+* *Data Protection* : Used Ranger for granular access control and AutoTLS (Self-signed) for encryption in transit.
+* *Gateways* : Knox and Atlas were configured, with access secured either directly or via the Knox SSO gateway.
+
+== Real-World Proof: The Use Case
+
+Executed a Bank Branch Performance Analytics workload to exercise the full data lifecycle — ingestion, processing, and serving. This involved:
+
+. Ingesting data into *HDFS/Ozone*.
+. Processing and transforming the data using *CDE Spark jobs*.
+. Querying and reporting from data materialized in *CDW (Hive/Impala)*.
+. Visualizing the final metrics with a data visualization app.
+
+link:https://github.com/cloudera/End2EndLabs/tree/main/Project-Axon/On-prem[Use Case Full Details]
+
+== Contact Us
+mailto:ksahu@cloudera.com[Kuldeep Sahu]
+
+mailto:ygulati@cloudera.com[Yash Gulati]

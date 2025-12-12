@@ -8,7 +8,8 @@ The repository is structured by on-premise platforms, with each platform having 
 == Usage Instructions
 1. Click on below link to Navigate to the folder for your chosen on-premise platform.
 * link:./ECS/[**`ECS`**]
-* link:./Openshift/[**`Openshift`**] [Not available yet]
+* link:./OCP/[**`Openshift`**] [Not available yet]
+* link:./OCP-Virt/[**`OCP-Virt`**]
 
 2. Follow the `README` file in that folder for detailed steps on configuring and running the automation.
 3. Ensure all prerequisites are met before initiating deployment.

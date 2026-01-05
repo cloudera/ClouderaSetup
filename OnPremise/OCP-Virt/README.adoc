@@ -52,7 +52,7 @@ End to End Functionality was validated across the major Data Services:
 
 * *CDW (Cloudera Data Warehouse)* : Created Virtual Warehouses (Hive / Impala) and ran successful sample CRUD queries via the Hue interface.
 * *CDE (Cloudera Data Engineering)* : Set up Virtual Clusters (Spark 3.5.1), added Hadoop Authentication with a Keytab, and executed multiple sample Spark jobs.
-* *CAI (Cloudera AI)* : Successfully deployed the AI Workbench, configured Hadoop Authentication, and tested session creation with sample project templates.
+* *CAI (Cloudera AI)* : Successfully deployed the AI Workbench, configured Hadoop Authentication, and tested session creation with sample project templates, along with the deployment of Agent Studio.
 
 == Enterprise Security
 

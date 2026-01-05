@@ -1,0 +1,201 @@
+= Cloudera on-Premises Deployment & Validation on Red Hat OpenShift Virtualization
+
+== 1. Executive Summary
+
+As enterprises modernize their on-premises data infrastructure, the combination of Cloudera Data Platform and Red Hat OpenShift Virtualization (OCP-V) is emerging as a transformative architecture.
+
+This joint engineering work demonstrates:
+
+* Production-grade deployment of Cloudera on-premises Base (a.k.a Cloudera Private Cloud Base) on OCP-V
+* Successful validation at 100+ OCP-V Virtualized nodes
+* End-to-end integration with Data Services (CDW, CDE, CAI)
+* Enterprise-grade security with TLS, Kerberos, LDAP, Ranger, and Knox
+* A real end-to-end Bank Branch Performance Analytics use case spanning ingestion → processing → visualization
+
+This single document integrates all deployment steps, architecture, validation reports, and outcomes—serving as a reference blueprint for field, engineering, and customer teams.
+
+== 2. Why OpenShift Virtualization for Cloudera?
+
+=== 2.1 Challenges with Traditional Bare Metal / Legacy Hypervisors
+
+Organizations using legacy VM platforms or bare-metal servers face:
+
+* Static & rigid resource allocation
+* Complex lifecycle management and patching
+* Slow infra provisioning
+* Hardware-dependent scaling
+* Split operational models (VMs vs containers)
+
+These issues slow down the rollout of large analytics clusters like Cloudera Platform.
+
+=== 2.2 Benefits of Deploying Cloudera on OCP-V
+
+OpenShift Virtualization brings cloud-native virtualization onto Kubernetes, offering:
+
+[cols="1,3",options="header"]
+|===
+| Benefit | Description
+| Unified Platform | Run containers + VMs on one K8s platform
+| Elastic Scaling | CPU/Memory/Disk tuned dynamically across workers
+| Rapid Provisioning | VM templates, GitOps, CI/CD-driven lifecycle
+| High Availability | OpenShift operators, MachineSets, self-healing
+| Cost Efficiency | Significantly higher node utilization
+| Security & Compliance | RBAC, SCC, NetworkPolicies, Encryption
+| Automation | GitOps + Ansible + CM API automation for infra and Cloudera
+|===
+
+This makes OCP-V an ideal substrate for Cloudera’s on-prem analytics platform.
+
+== 3. Architecture Overview
+
+The validated architecture consists of:
+
+=== Platform Layer (OCP-V)
+
+* OpenShift 4.x deployed on bare-metal worker nodes
+* OpenShift Virtualization Operator enabled
+* Worker nodes configured for VM scheduling and live migration
+* VM networks via Multus, VLAN bridging
+* Storage via OpenShift Data Foundation (ODF)
+* Node-Local Storage via the Local Storage Operator (LSO)
+
+=== Virtual Machines
+
+Cloudera Base services run entirely inside OCP-V VMs:
+
+* Cloudera Manager Node
+* Utility/Database Node (PostgreSQL)
+* Master Nodes (NameNode, Hive Metastore, ResourceManager, etc.)
+* Worker Nodes (DataNode, NodeManager, Impala, Kafka brokers, HBase RegionServers, etc.)
+* NiFi & NiFi Registry
+* FreeIPA (for Kerberos)
+* Ranger, Knox, Atlas, Solr, Ozone, Spark3, Tez, Phoenix, Iceberg, Hive, Impala
+
+All VM nodes were RHEL 9.5 with Cloudera-certified stacks.
+
+=== Data Services Layer (Optional on Bare-Metal or OCP-V VMs)
+
+* CDE: Spark 3.5.1 Clusters, Pipelines, Jobs
+* CDW: Hive & Impala Virtual Warehouses, Data Catalog, Viz
+* CAI: Workspaces, AMP deployments, Agent Studio deployment, GPU/CPU workloads
+
+Hybrid topologies were validated (Base on OCP-V + Data Services on Bare Metal).
+
+== 4. OpenShift Virtualization Deployment
+
+=== 4.1 OpenShift Cluster Setup
+
+* OpenShift 4.x deployed using IPI/UPI
+* Multiple worker nodes with virtualization enabled (KubeVirt)
+* OpenShift Virtualization Operator installation
+* Validation of CPU virtualization extensions (VT-x/AMD-V)
+
+=== 4.2 Storage & Networking
+
+* ODF configured for VM disks (RWX PVCs to support Live Migration)
+* Multus network bridging for VM L2/L3 connectivity
+* VM interfaces exposed via Linux Bridge / SR-IOV as needed
+
+=== 4.3 VM Templates & Cloud-Init
+
+VM provisioning automated using:
+
+* RHEL-9.5 base template
+* Cloud-init for:
+** Hostname & network configs
+** SSH keys
+** Subscription & package installations
+** Disk configuration
+** Cloudera prerequisites
+
+== 5. 100+ Node Cloudera on-premises Base Deployment (Engineering Validation)
+
+=== 5.1 Cluster Composition
+
+[cols="2,1",options="header"]
+|===
+| Node Type | Count
+| Cloudera Manager | 1
+| Utility Node (DB, Tools) | 1
+| Master Nodes | 3
+| Worker Nodes | 97
+| Total | 102 Nodes
+|===
+
+=== 5.2 Security Configuration
+
+* Kerberos via Externally Hosted FreeIPA
+* AutoTLS enabled cluster-wide
+* LDAP integrated for Ranger Usersync
+* Knox + IDBroker configured
+
+=== 5.3 Cloudera Base Services Installed
+
+HDFS, YARN, Ozone, Hive, Impala, HBase, Kafka, Atlas, Solr, Ranger, Knox, Spark3, Phoenix, Tez, Iceberg, NiFi, NiFi Registry, Hue, Cloudera Management Services, Replication Manager.
+
+=== 5.4 Validation Results (All Passed)
+
+* TLS Validation
+* Kerberos Authentication Tests
+* HDFS Operations
+* Hive / Impala SQL Queries
+* Ozone Volume/Bucket Creation & ACLs
+* Spark Job Execution
+* YARN Job Scheduling
+* Atlas Lineage
+* Ranger Authentication & Authorization
+* NiFi lifecycle checks
+
+== 6. Cloudera Data Services (PvC 1.5.5 SP1) Validation
+
+Validated Components:
+
+* Management Console
+* CDW: Virtual Warehouses, Data Catalog, Queries
+* CDE: Spark Clusters, Jobs, Pipelines
+* CAI: Workspaces, AMP, Training, Inference, Agent Studio
+
+Outcome confirms hybrid topology support.
+
+== 7. End-to-End Use Case Validation: Bank Branch Performance Analytics
+
+=== 7.1 Workflow Summary
+
+* Ingestion: NiFi + NiFi Registry
+* Secure Storage: HDFS + Ozone with Ranger & Kerberos
+* Data Engineering: Spark jobs via CDE
+* Data Warehousing: Hive/Impala via CDW
+* Visualization: Dashboards for KPIs
+
+=== 7.2 Result
+
+✔ Ingestion → Storage → ETL → Analytics → Visualization  
+✔ Authentication, Governance, Lineage
+
+== 8. CAI Validation
+
+Capabilities Tested:
+
+* Workspace creation
+* AMP deployment
+* Agent Studio
+* ML training (CPU/GPU)
+* Model serving
+
+== 9. Operational Benefits Achieved
+
+* Faster VM provisioning
+* Unified ops for VM + containers
+* Centralized governance
+* Hybrid analytics enablement
+
+== 10. Key Outcomes
+
+* Validated OCP-V support
+* Proven 100+ node deployment
+* Hybrid architecture verified
+* Production-grade BFSI use case
+
+== 11. Conclusion
+
+Cloudera on-premises and Red Hat OpenShift Virtualization together provide a future-ready foundation for enterprise analytics. This document serves as a blueprint for large-scale deployments on OpenShift Virtualization.

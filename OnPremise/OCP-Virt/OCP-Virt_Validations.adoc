@@ -14,6 +14,10 @@ This joint engineering work demonstrates:
 
 This single document integrates all deployment steps, architecture, validation reports, and outcomes—serving as a reference blueprint for field, engineering, and customer teams.
 
+=== 1.1 Deployment Architecture
+image::../../images/OCP-Virt_Cloudera_Base.png[OCP-Virt_Cloudera_Base]
+image::../../images/OCP-Virt_Cloudera_DS.png[OCP-Virt_Cloudera_DS]
+
 == 2. Why OpenShift Virtualization for Cloudera?
 
 === 2.1 Challenges with Traditional Bare Metal / Legacy Hypervisors

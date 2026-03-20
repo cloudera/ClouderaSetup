@@ -1,9 +1,12 @@
 = ClouderaSetup
 
-This folder contains resources and scripts for setting up Cloudera environments on public cloud platforms (such as `AWS`, `Azure`, and `GCP`) as well as private cloud/on-premise infrastructures (e.g. `VMware`, `Openshift`).
+This folder contains resources and scripts for setting up Cloudera environments on public cloud platforms (such as `AWS`, `Azure`, and `GCP`) as well as private cloud/on-premises infrastructures (e.g., `VMware`, `OpenShift`).
+
+It also includes reference guide for networking and access configurations, such as F5 BIG-IP integration for enabling external connectivity to Cloudera environments.
 
 == Repository Structure
-The repository is structured by form factors, with each form factor having its own folder containing relevant automation resources.
+
+The repository is structured by form factors, with each form factor having its own folder containing relevant automation resources. Additional setup guide (e.g., F5 BIG Ip integration) is included alongside these folders.
 
 == Usage Instructions
 
@@ -12,12 +15,12 @@ Click on the links below to navigate to the folder for your chosen form factor:
 * link:./OnCloud[**`OnCloud`**]
 * link:./OnPremise[**`OnPremise`**]
 
-Follow the `README` file in the respective folder for detailed steps on configuring and running the automation.
+For F5 BIG-IP setup & Networking, refer to the corresponding documentation available in this directory.
+
+* link:./F5-BIGIP-Setup[**`F5-BIGIP-Setup`**]
+
+Follow the `README` file in the respective folder or document for detailed steps on configuring and running the automation.
 
 [NOTE]
-In the subfolders, Cloudera Data Platform may be referred to as CDP or simply Cloudera. Both terms refer to the same platform.
+In the subfolders and documents, Cloudera Data Platform may be referred to as CDP or simply Cloudera. Both terms refer to the same platform.
 
----
-
-**Copyright Notice**  
-All material is Copyright (c) 2020-2025 Cloudera, Inc. unless stated otherwise.

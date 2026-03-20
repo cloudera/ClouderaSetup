@@ -1,0 +1,21 @@
+= F5 BIG-IP Integration with Cloudera (IPv6 to IPv4 Translation)
+
+:toc:
+:toclevels: 3
+:icons: font
+
+== Overview
+
+This document provides a step-by-step guide to configuring F5 BIG-IP to enable IPv6 network traffic access to a Cloudera on-premises environment that operates on IPv4.
+
+It also includes instructions for enabling IPv4 access and highlights the supported services within scope.
+
+== Objectives
+
+* Enable IPv6 clients to access Cloudera services hosted on IPv4 infrastructure
+* Configure F5 BIG-IP for protocol translation and traffic routing
+* Provide external access to Cloudera services via REST APIs
+* Ensure secure and scalable connectivity
+
+== Contributors
+* Avanish Tiwari

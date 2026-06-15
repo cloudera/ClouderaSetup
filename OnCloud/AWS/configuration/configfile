@@ -14,6 +14,7 @@ HOSTEDZONEID:<VALUE>
 #==================Optional Parameters===============#
 #PROVISION_CAII:YES
 #AWS_KEY_PAIR:demo-keypair
+#ENV_TAGS:{key1=value1,key2=value2,key3=value3}
 
 ## Optional parameters for datalake_version
 #DATALAKE_VERSION:7.2.18

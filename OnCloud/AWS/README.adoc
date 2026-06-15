@@ -437,6 +437,11 @@ Only from the provided values
 |AWS_KEY_PAIR
 |If you want to utilize an already existing keypair, uncomment the corresponding entry in `configfile` and override the value with the keypair name. If AWS_KEY_PAIR is not defined, the automation will create a new keypair.
 |Only base name without .pem extension.
+
+
+|ENV_TAGS
+|Optional AWS resource tags to be applied to all deployed resources. Tags must be provided as comma-separated key=value pairs.
+|Example: ENV_TAGS:{`owner=john,project=cdp-workshop,enddate=2026-12-31`}
 |===
 
 .. Optional parameters for `AI Inference Service` Deployment
@@ -466,7 +471,7 @@ Note: `This will deploy the **Cloudera on Cloud environment**, initialize **Comp
 
 |DATALAKE_VERSION
 |By default the DATALAKE_VERSION is selected as per default version on CDP tenant.
-|To override the default value with current quota, kindly uncomment the corresponding entry in `configfile` and replace the override value e.g **7.2.18**
+|To override the default value with current quota, kindly uncomment the corresponding entry in `configfile` and replace the override value e.g **7.3.2**
 |===
 
 .. Optional parameters for CDP Quota

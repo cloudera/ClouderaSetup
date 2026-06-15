@@ -15,6 +15,7 @@ HOSTEDZONEID:ZCLOUDERAPSEAPACTEAM1
 #==================Optional Parameters===============#
 #PROVISION_CAII:YES
 #AWS_KEY_PAIR:demo-keypair
+#ENV_TAGS:{owner=john,project=cdp-workshop,enddate=2026-12-31}
 
 ## Optional parameters for datalake_version
 #DATALAKE_VERSION:7.2.18
